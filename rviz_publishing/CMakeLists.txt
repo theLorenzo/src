@@ -19,4 +19,7 @@ target_link_libraries(rviz_publisher ${catkin_LIBRARIES})
 add_executable(rviz_publisher_scoutodom src/rviz_publisher_scoutodom.cpp)
 target_link_libraries(rviz_publisher_scoutodom ${catkin_LIBRARIES})
 
+add_executable(rviz_publisher_gtpose src/rviz_publisher_gtpose.cpp)
+target_link_libraries(rviz_publisher_gtpose ${catkin_LIBRARIES})
+
 

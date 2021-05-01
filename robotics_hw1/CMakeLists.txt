@@ -7,7 +7,6 @@ find_package(
     message_generation
     nav_msgs
     std_msgs
-
 )
 
 add_message_files(
@@ -15,7 +14,6 @@ add_message_files(
     MotorSpeed.msg
     WheelSpeeds.msg
     BaselineMsg.msg
-
 )
 
 
@@ -23,7 +21,6 @@ generate_messages(
   DEPENDENCIES
     std_msgs
     nav_msgs
-
     
 
 )
@@ -33,5 +30,4 @@ catkin_package(
     std_msgs
     nav_msgs
     message_runtime
-
 )

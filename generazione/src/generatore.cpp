@@ -5,7 +5,6 @@
 #include<robotics_hw1/WheelSpeeds.h>
 #include<robotics_hw1/BaselineMsg.h>
 #include<geometry_msgs/TwistStamped.h>
-//bgngngnngghg
 
 class generatore_twist {
     float vl;
