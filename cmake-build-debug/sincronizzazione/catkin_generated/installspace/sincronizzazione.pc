@@ -1,0 +1,8 @@
+prefix=/usr/local
+
+Name: sincronizzazione
+Description: Description of sincronizzazione
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: geometry_msgs message_filters robotics_hw1 std_msgs

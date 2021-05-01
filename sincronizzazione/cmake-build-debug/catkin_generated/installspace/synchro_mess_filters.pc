@@ -1,0 +1,8 @@
+prefix=/usr/local
+
+Name: synchro_mess_filters
+Description: Description of synchro_mess_filters
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: geometry_msgs message_filters robotics_hw1 std_msgs

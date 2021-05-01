@@ -1,0 +1,8 @@
+prefix=/usr/local
+
+Name: rviz_publishing
+Description: Description of rviz_publishing
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 
