@@ -64,7 +64,7 @@ void callback(const geometry_msgs::PoseStamped::ConstPtr &msg){
         q[0] = msg->pose.orientation.x-0.0221652016044;
         q[1] = msg->pose.orientation.y+0.0104456143454;
         q[2] = msg->pose.orientation.z+0.533567428589;
-        q[3] = msg->pose.orientation.w-0.845402538776;
+        q[3] = msg->pose.orientation.w+0.1545997461224;
         transform.setRotation(q);
         br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "map", "gtpose"));
 
