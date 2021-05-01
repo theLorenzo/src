@@ -3,7 +3,7 @@ project(integrazione)
 
 ## Find catkin and any catkin packages
 find_package(catkin REQUIRED COMPONENTS roscpp std_msgs robotics_hw1 geometry_msgs message_filters dynamic_reconfigure)
-
+  
 generate_dynamic_reconfigure_options(
 cfg/metodi.cfg
 )  
