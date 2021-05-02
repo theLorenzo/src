@@ -28,6 +28,7 @@ class rviz_publisher_gtpose
     tf::Quaternion new_quaternion;
     int flag = 0;
 
+    
 private:
     ros::NodeHandle n;
     tf::TransformBroadcaster br;
