@@ -10,12 +10,24 @@
 #define _USE_MATH_DEFINES
 #include<math.h>
 #include <tf2/LinearMath/Quaternion.h>
+#include <tf/LinearMath/Quaternion.h>
 
 
 class rviz_publisher_gtpose
 {
 
     geometry_msgs::PoseStamped messaggio;
+    float initial_x = 0.832142114639;
+    float initial_y = 0.426361680031;
+    double roll;
+    double pitch;
+    double yaw;
+    double roll_init;
+    double pitch_init;
+    double yaw_init;
+    tf::Quaternion new_quaternion;
+    int flag = 0;
+
 private:
     ros::NodeHandle n;
     tf::TransformBroadcaster br;
@@ -42,13 +54,30 @@ void callback(const geometry_msgs::PoseStamped::ConstPtr &msg){
     messaggio.header.frame_id = "map";
     //messaggio.header.child_frame_id = "gtpose";
 
-    messaggio.pose.position.x = msg->pose.position.x;
-    messaggio.pose.position.y = msg->pose.position.y;
+    tf::Quaternion q_rpy(
+            msg->pose.orientation.x,
+            msg->pose.orientation.y,
+            msg->pose.orientation.z,
+            msg->pose.orientation.w);
+    tf::Matrix3x3 m(q_rpy);
+    m.getRPY(roll, pitch, yaw);
+    if (flag == 0){
+        roll_init = roll;
+        pitch_init = pitch;
+        yaw_init = yaw;
+    }
+    new_quaternion.setRPY(roll-roll_init, pitch-pitch_init, yaw-yaw_init);
+    flag = 1;
+
+    messaggio.pose.position.x = msg->pose.position.x+initial_x;
+    messaggio.pose.position.y = msg->pose.position.y-initial_y;
     messaggio.pose.position.z= 0;
-    messaggio.pose.orientation.x = msg->pose.orientation.x;
-    messaggio.pose.orientation.y = msg->pose.orientation.y;
-    messaggio.pose.orientation.z = msg->pose.orientation.z;
-    messaggio.pose.orientation.w = msg->pose.orientation.w;
+    messaggio.pose.orientation.x = new_quaternion[0];
+    messaggio.pose.orientation.y = new_quaternion[1];
+    messaggio.pose.orientation.z = new_quaternion[2];
+    messaggio.pose.orientation.w = new_quaternion[3];
+
+
 
     /*messaggio.twist.twist.linear.x = msg->twist.twist.linear.x;
     messaggio.twist.twist.linear.y = msg->twist.twist.linear.y;
@@ -59,13 +88,15 @@ void callback(const geometry_msgs::PoseStamped::ConstPtr &msg){
     messaggio.twist.twist.angular.z = msg->twist.twist.angular.z;*/
 
 
-    transform.setOrigin( tf::Vector3(msg->pose.position.x, msg->pose.position.y, 0) );
+    transform.setOrigin( tf::Vector3(msg->pose.position.x+initial_x, msg->pose.position.y-initial_y, 0) );
         tf::Quaternion q;
-        q[0] = msg->pose.orientation.x;
-        q[1] = msg->pose.orientation.y;
-        q[2] = msg->pose.orientation.z;
-        q[3] = msg->pose.orientation.w;
+
+        q[0] = new_quaternion[0];
+        q[1] = new_quaternion[1];
+        q[2] = new_quaternion[2];
+        q[3] = new_quaternion[3];
         transform.setRotation(q);
+
         br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "map", "gtpose"));
 
         pub.publish(messaggio);
