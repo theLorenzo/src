@@ -9,7 +9,7 @@
 class generatore_twist {
     float vl;
     float vr;
-    float baseline = 1.012144;
+    float baseline = 1.036;  //1.012144;
 
     geometry_msgs::TwistStamped messaggio_twist;
 
