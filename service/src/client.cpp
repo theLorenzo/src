@@ -1,103 +1,37 @@
 #include "ros/ros.h"
 #include "service/ResetZero.h"
-#include "nav_msgs/Odometry.h"
+#include "service/GivenPose.h"
 
-class reset_zero
-{
+char input;
 
-    
-private:
-    ros::NodeHandle n;
-    ros::ServiceClient client = n.serviceClient<service::ResetZero>("reset_zero");
-    service::ResetZero srv;
-    ros::Subscriber sub;
-    nav_msgs::Odometry msg;
-    ros::Publisher pub;
-
-public:
-     reset_zero(){
-     sub = n.subscribe("/integrazione_odom", 200, &reset_zero::callback, this);
-     pub = n.advertise<nav_msgs::Odometry>("integrazione_odom", 10);
-     }
-
-
-void callback(const nav_msgs::Odometry::ConstPtr &msg){
-
-        srv.request.a = msg->pose.pose.position.x;
-        srv.request.b = msg->pose.pose.position.y;
-        srv.request.c = msg->pose.pose.position.z;
-        if (client.call(srv))
-        {
-           ROS_INFO("reset x: %f", (float)srv.response.set_a);
-           ROS_INFO("reset y: %f", (float)srv.response.set_b);
-           ROS_INFO("reset theta: %f", (float)srv.response.set_c);
-           pub.publish(msg);
-        }
-        else
-        {
-        ROS_ERROR("Failed to call service reset_zero");
-        //return 1;
-        }
-
-  //return 0;
-
-}
-
-
-};
-
+std::string coordinate;
 int main(int argc, char **argv)
 {
- ros::init(argc, argv, "reset_zero");
- reset_zero my_reset_zero;
- ros::spin();
- return 0;
-}
 
-
-
-
-/*ros::NodeHandle n;
-  ros::ServiceClient client = n.serviceClient<service::ResetZero>("reset_zero");
-  service::ResetZero srv;
-  ros::Subscriber sub;
-
-void odomCallback(const nav_msgs::Odometry::ConstPtr &msg){
-   srv.request.a = msg->pose.pose.position.x;
-   srv.request.b = msg->pose.pose.position.y;
-   srv.request.c = msg->pose.pose.position.z;
-}
-
-
-
-
-
-int main(int argc, char **argv)
-{
-  /*ros::init(argc, argv, "add_two_ints_client");
-  if (argc != 3)
-  {
-    ROS_INFO("usage: add_two_ints_client X Y");
-    return 1;
-  }
-
+  ros::init(argc, argv, "client");
   ros::NodeHandle n;
+
   ros::ServiceClient client = n.serviceClient<service::ResetZero>("reset_zero");
-  service::ResetZero srv;
-  ros::Subscriber sub;
-  sub = n.subscriber("/integrazione_odom", 200, &odomCallback);
-  
-  if (client.call(srv))
-  {
-    ROS_INFO("reset x: %f", (float)srv.response.set_a);
-    ROS_INFO("reset y: %f", (float)srv.response.set_b);
-    ROS_INFO("reset theta: %f", (float)srv.response.set_c);
+  ros::ServiceClient client1 = n.serviceClient<service::GivenPose>("given_pose");
+  service::ResetZero srv1;
+  service::GivenPose srv2;
+  std::cout << "Ready to change the odometry, press enter to reset to origin or x,y,theta to set coordinates..";
+  std::cin >> input;
+  if(input == '\n'){
+      srv1.request.x = 0;
+      srv1.request.y = 0;
+      srv1.request.theta = 0;
+      ROS_INFO("CAMBIATO ALL'ORIGINE");
   }
-  else
-  {
-    ROS_ERROR("Failed to call service reset_zero");
-    return 1;
+  else{
+      std::cout << "Ready to take the desider coordinates: ";
+      srv2.request.x = coordinate[0];
+      srv2.request.y = coordinate[2];
+      srv2.request.theta = coordinate[4];
+      ROS_INFO("CAMBIATO ALLA POSIZIONE DESIDERATA");
+
   }
 
-  return 0;
-}*/
+  ros::spinOnce();
+
+}

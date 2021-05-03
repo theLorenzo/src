@@ -12,6 +12,8 @@
 #include <tf/LinearMath/Quaternion.h>
 #include <dynamic_reconfigure/server.h>
 #include <integrazione/metodiConfig.h>
+#include <service/GivenPose.h>
+#include <service/ResetZero.h>
 
 
 class integratore
@@ -62,6 +64,8 @@ public:
         //sub2 = n.subscribe<geometry_msgs::TwistStamped>("/scout_odom", 200, &integratore::callback2, this);
         pub = n.advertise<nav_msgs::Odometry>("integrazione_odom", 10);
         //pub2 = n.advertise<nav_msgs::Odometry>("/scout_osom_tf", 10);
+        ros::ServiceServer service1 = n.advertiseService("reset_zero", &integratore::reset_zero_f,this);
+        ros::ServiceServer service2 = n.advertiseService("given_pose", &integratore::given_pose_f,this);
 
 
         n.getParam("starting_x", x_old);
@@ -167,6 +171,34 @@ public:
   flag = config.metodo;
   ROS_INFO ("%d",flag);
 }
+bool reset_zero_f(service::ResetZeroRequest &req, service::ResetZeroResponse &res){
+
+     x = 0;
+     y = 0;
+     x_old = 0;
+     y_old = 0;
+     x_old_rk = 0;
+     y_old_rk = 0;
+     ROS_INFO("Odometry traslata all'origine");
+
+     return true;
+
+    }
+bool given_pose_f(service::ResetZeroRequest &req, service::ResetZeroResponse &res){
+    x = req.x;
+    y = req.y;
+    x_old = req.x;
+    y_old = req.y;
+    x_old_rk = req.x;
+    y_old_rk = req.y;
+    theta = req.theta;
+    theta_old = req.theta;
+    theta_rk = req.theta;
+    theta_old_rk = req.theta;
+    ROS_INFO("Odometry traslata a %f,%f,%f", x, y, theta);
+    return true;
+    }
+
 };
 
 int main(int argc, char **argv){
