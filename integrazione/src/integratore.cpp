@@ -55,6 +55,8 @@ private:
     nav_msgs::Odometry message_rk;
     dynamic_reconfigure::Server<integrazione::metodiConfig> server;
     dynamic_reconfigure::Server<integrazione::metodiConfig>::CallbackType f;
+    ros::ServiceServer service1;
+    ros::ServiceServer service2;
 
 public:
     integratore(){
@@ -64,8 +66,8 @@ public:
         //sub2 = n.subscribe<geometry_msgs::TwistStamped>("/scout_odom", 200, &integratore::callback2, this);
         pub = n.advertise<nav_msgs::Odometry>("integrazione_odom", 10);
         //pub2 = n.advertise<nav_msgs::Odometry>("/scout_osom_tf", 10);
-        ros::ServiceServer service1 = n.advertiseService("reset_zero", &integratore::reset_zero_f,this);
-        ros::ServiceServer service2 = n.advertiseService("given_pose", &integratore::given_pose_f,this);
+        service1 = n.advertiseService("reset_zero", &integratore::reset_zero_f,this);
+        service2 = n.advertiseService("given_pose", &integratore::given_pose_f,this);
 
 
         n.getParam("starting_x", x_old);
