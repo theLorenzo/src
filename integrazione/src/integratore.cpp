@@ -4,6 +4,7 @@
 #include "nav_msgs/Odometry.h"
 #include<robotics_hw1/WheelSpeeds.h>
 #include<robotics_hw1/BaselineMsg.h>
+#include<robotics_hw1/FinalMsg.h>
 #include<geometry_msgs/TwistStamped.h>
 #include <boost/bind.hpp>
 #include <sstream>
@@ -45,14 +46,19 @@ float omega_z;
 
 int flag = 0;
 
+
 private:
     ros::NodeHandle n;
     ros::Subscriber sub;
     ros::Subscriber sub2;
     ros::Publisher pub;
     ros::Publisher pub2;
+    ros::Publisher pub3;
     nav_msgs::Odometry message;
     nav_msgs::Odometry message_rk;
+
+    robotics_hw1::FinalMsg messaggio_finale;
+
     dynamic_reconfigure::Server<integrazione::metodiConfig> server;
     dynamic_reconfigure::Server<integrazione::metodiConfig>::CallbackType f;
     ros::ServiceServer service1;
@@ -66,6 +72,7 @@ public:
         //sub2 = n.subscribe<geometry_msgs::TwistStamped>("/scout_odom", 200, &integratore::callback2, this);
         pub = n.advertise<nav_msgs::Odometry>("integrazione_odom", 10);
         //pub2 = n.advertise<nav_msgs::Odometry>("/scout_osom_tf", 10);
+        pub3 = n.advertise<robotics_hw1::FinalMsg>("odom_and_method");
         service1 = n.advertiseService("reset_zero", &integratore::reset_zero_f,this);
         service2 = n.advertiseService("given_pose", &integratore::given_pose_f,this);
 
@@ -91,7 +98,7 @@ public:
     integration_time = current_time - old_time;
     //INTEGRAZIONE EULERO E PUBBLICAZIONE
     if(flag == 0) {
-    ROS_INFO("Eulero");
+    //ROS_INFO("Eulero");
     x = x_old + vk*integration_time*cosf(theta_old);
     y = y_old + vk*integration_time*sinf(theta_old);
     theta = theta_old + omegak*integration_time;
@@ -121,11 +128,14 @@ public:
     message.pose.pose.orientation.w = myQuaternion[3];
     pub.publish(message);
 
+
+
     }
 
     //INTEGRAZIONE RK E PUBBLICAZIONE
+
     else if (flag == 1) {
-    ROS_INFO("Rk");
+    //ROS_INFO("Rk");
     x_rk = x_old_rk + vk*integration_time*cosf(theta_old_rk +(omegak*integration_time)/2);
     y_rk = y_old_rk + vk*integration_time*sinf(theta_old_rk +(omegak*integration_time)/2);
     theta_rk = theta_old_rk + omegak*integration_time;
