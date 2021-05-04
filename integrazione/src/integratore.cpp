@@ -91,7 +91,7 @@ public:
     integration_time = current_time - old_time;
     //INTEGRAZIONE EULERO E PUBBLICAZIONE
     if(flag == 0) {
-    ROS_INFO("EULERO");   
+    ROS_INFO("Eulero");
     x = x_old + vk*integration_time*cosf(theta_old);
     y = y_old + vk*integration_time*sinf(theta_old);
     theta = theta_old + omegak*integration_time;
@@ -125,7 +125,7 @@ public:
 
     //INTEGRAZIONE RK E PUBBLICAZIONE
     else if (flag == 1) {
-    ROS_INFO("RK");
+    ROS_INFO("Rk");
     x_rk = x_old_rk + vk*integration_time*cosf(theta_old_rk +(omegak*integration_time)/2);
     y_rk = y_old_rk + vk*integration_time*sinf(theta_old_rk +(omegak*integration_time)/2);
     theta_rk = theta_old_rk + omegak*integration_time;
