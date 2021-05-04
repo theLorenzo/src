@@ -72,7 +72,7 @@ public:
         //sub2 = n.subscribe<geometry_msgs::TwistStamped>("/scout_odom", 200, &integratore::callback2, this);
         pub = n.advertise<nav_msgs::Odometry>("integrazione_odom", 10);
         //pub2 = n.advertise<nav_msgs::Odometry>("/scout_osom_tf", 10);
-        pub3 = n.advertise<robotics_hw1::FinalMsg>("odom_and_method");
+        pub3 = n.advertise<robotics_hw1::FinalMsg>("odom_and_method",10);
         service1 = n.advertiseService("reset_zero", &integratore::reset_zero_f,this);
         service2 = n.advertiseService("given_pose", &integratore::given_pose_f,this);
 
@@ -128,7 +128,9 @@ public:
     message.pose.pose.orientation.w = myQuaternion[3];
     pub.publish(message);
 
-
+    messaggio_finale.odom = message;
+    messaggio_finale.method.data = "Eulero";
+    pub3.publish(messaggio_finale);
 
     }
 
@@ -165,6 +167,10 @@ public:
     message_rk.pose.pose.orientation.w = myQuaternion_rk[3];
     //message_rk.header.frame_id = "map";
     pub.publish(message_rk);
+
+    messaggio_finale.odom = message_rk;
+    messaggio_finale.method.data = "Rk";
+    pub3.publish(messaggio_finale);
     old_time = current_time;
     }
     else 
@@ -176,12 +182,14 @@ public:
 
 
   void callback_dyn(integrazione::metodiConfig &config, uint32_t level) {
-  
-  ROS_INFO("Entrato nella callback_dyn");
-  //ROS_INFO("Reconfigure Request: %d", 
-   //         config.metodo);
+
   flag = config.metodo;
-  ROS_INFO ("%d",flag);
+  if(flag == 1){
+      ROS_INFO("Integrazione passata in runge-kutta");
+  }
+  else{
+      ROS_INFO("Integrazione passata in eulero");
+  }
 }
 bool reset_zero_f(service::ResetZeroRequest &req, service::ResetZeroResponse &res){
 
