@@ -5,6 +5,7 @@
 char input;
 
 std::string coordinate;
+
 float coordinata_x;
 float coordinata_y;
 float coordinata_theta;
@@ -29,8 +30,8 @@ int main(int argc, char **argv)
           srv1.request.y = 0;
           srv1.request.theta = 0;
           client.call(srv1);
-          ROS_INFO("CAMBIATO ALL'ORIGINE");
-
+          ROS_INFO("Posizione cambiata all'origine");
+    return 0;
   }
   else if (input == '2'){
       //std::cout << "Ready to take the desider coordinates: ";
@@ -46,11 +47,14 @@ int main(int argc, char **argv)
           srv2.request.theta = coordinata_theta;
           client1.call(srv2);
           
-          ROS_INFO("CAMBIATO ALLA POSIZIONE DESIDERATA");
-
+          ROS_INFO("Posizione cambiata alle coordinate [%f, %f, %f]", coordinata_x, coordinata_y, coordinata_theta);
+        return 0;
 
   }
+  else {
+      ROS_INFO("Input invalido, riprovare...");
+      return 0;
+  }
 
-  ros::spinOnce();
-
+  ros::spin();
 }
