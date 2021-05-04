@@ -52,8 +52,8 @@ void callback(const robotics_hw1::MotorSpeed::ConstPtr &msg1,
               const robotics_hw1::MotorSpeed::ConstPtr &msg4) {
 
 
-    ROS_INFO ("Quattro speeds: fl: %f, fr: %f, rl: %f, rr: %f",
-              msg1->rpm, msg2->rpm, msg3->rpm, msg4->rpm);
+    // ROS_INFO ("Quattro speeds: fl: %f, fr: %f, rl: %f, rr: %f",
+    //          msg1->rpm, msg2->rpm, msg3->rpm, msg4->rpm);
 
     ROS_INFO("----------------------");
     message.header.stamp = msg1->header.stamp;
