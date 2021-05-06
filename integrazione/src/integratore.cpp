@@ -35,7 +35,7 @@ float y_old_rk = 0;
 float theta_old_rk = 0;
 
 double current_time;
-double old_time = 1619342819.251675288;
+double old_time;
 float integration_time = 0;
 
 float vk;
@@ -45,6 +45,7 @@ float vx;
 float omega_z;
 
 int flag = 0;
+int flag_time = 0;
 
 
 private:
@@ -86,6 +87,13 @@ public:
         }
     }
     void callback(const geometry_msgs::TwistStamped::ConstPtr &msg_twist){
+
+    if (flag_time == 0){
+
+     old_time = msg_twist->header.stamp.toSec();       //se è il primo ciclo, prende come valore old_time il valore della bag.
+     flag_time = 1;
+
+     }
     current_time = msg_twist->header.stamp.toSec();  // la funzione toSec(); è top perchè prende lo stamp
     vk = msg_twist->twist.linear.x;                  // e lo rende salvabile in una variabile di tipo double
     omegak = msg_twist->twist.angular.z;
