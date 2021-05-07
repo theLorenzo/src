@@ -4,6 +4,7 @@
 #include "nav_msgs/Odometry.h"
 #include<robotics_hw1/WheelSpeeds.h>
 #include<robotics_hw1/BaselineMsg.h>
+#include<robotics_hw1/FinalMsg.h>
 #include<geometry_msgs/TwistStamped.h>
 #include <boost/bind.hpp>
 #include <sstream>
@@ -34,7 +35,7 @@ float y_old_rk = 0;
 float theta_old_rk = 0;
 
 double current_time;
-double old_time = 1619342819.251675288;
+double old_time;
 float integration_time = 0;
 
 float vk;
@@ -44,6 +45,8 @@ float vx;
 float omega_z;
 
 int flag = 0;
+int flag_time = 0;
+
 
 private:
     ros::NodeHandle n;
@@ -51,8 +54,12 @@ private:
     ros::Subscriber sub2;
     ros::Publisher pub;
     ros::Publisher pub2;
+    ros::Publisher pub3;
     nav_msgs::Odometry message;
     nav_msgs::Odometry message_rk;
+
+    robotics_hw1::FinalMsg messaggio_finale;
+
     dynamic_reconfigure::Server<integrazione::metodiConfig> server;
     dynamic_reconfigure::Server<integrazione::metodiConfig>::CallbackType f;
     ros::ServiceServer service1;
@@ -66,6 +73,7 @@ public:
         //sub2 = n.subscribe<geometry_msgs::TwistStamped>("/scout_odom", 200, &integratore::callback2, this);
         pub = n.advertise<nav_msgs::Odometry>("integrazione_odom", 10);
         //pub2 = n.advertise<nav_msgs::Odometry>("/scout_osom_tf", 10);
+        pub3 = n.advertise<robotics_hw1::FinalMsg>("odom_and_method",10);
         service1 = n.advertiseService("reset_zero", &integratore::reset_zero_f,this);
         service2 = n.advertiseService("given_pose", &integratore::given_pose_f,this);
 
@@ -79,6 +87,13 @@ public:
         }
     }
     void callback(const geometry_msgs::TwistStamped::ConstPtr &msg_twist){
+
+    if (flag_time == 0){
+
+     old_time = msg_twist->header.stamp.toSec();       //se è il primo ciclo, prende come valore old_time il valore della bag.
+     flag_time = 1;
+
+     }
     current_time = msg_twist->header.stamp.toSec();  // la funzione toSec(); è top perchè prende lo stamp
     vk = msg_twist->twist.linear.x;                  // e lo rende salvabile in una variabile di tipo double
     omegak = msg_twist->twist.angular.z;
@@ -91,7 +106,7 @@ public:
     integration_time = current_time - old_time;
     //INTEGRAZIONE EULERO E PUBBLICAZIONE
     if(flag == 0) {
-    ROS_INFO("Eulero");
+    //ROS_INFO("Eulero");
     x = x_old + vk*integration_time*cosf(theta_old);
     y = y_old + vk*integration_time*sinf(theta_old);
     theta = theta_old + omegak*integration_time;
@@ -121,11 +136,16 @@ public:
     message.pose.pose.orientation.w = myQuaternion[3];
     pub.publish(message);
 
+    messaggio_finale.odom = message;
+    messaggio_finale.method.data = "Eulero";
+    pub3.publish(messaggio_finale);
+
     }
 
     //INTEGRAZIONE RK E PUBBLICAZIONE
+
     else if (flag == 1) {
-    ROS_INFO("Rk");
+    //ROS_INFO("Rk");
     x_rk = x_old_rk + vk*integration_time*cosf(theta_old_rk +(omegak*integration_time)/2);
     y_rk = y_old_rk + vk*integration_time*sinf(theta_old_rk +(omegak*integration_time)/2);
     theta_rk = theta_old_rk + omegak*integration_time;
@@ -155,6 +175,10 @@ public:
     message_rk.pose.pose.orientation.w = myQuaternion_rk[3];
     //message_rk.header.frame_id = "map";
     pub.publish(message_rk);
+
+    messaggio_finale.odom = message_rk;
+    messaggio_finale.method.data = "Rk";
+    pub3.publish(messaggio_finale);
     old_time = current_time;
     }
     else 
@@ -166,12 +190,14 @@ public:
 
 
   void callback_dyn(integrazione::metodiConfig &config, uint32_t level) {
-  
-  ROS_INFO("Entrato nella callback_dyn");
-  //ROS_INFO("Reconfigure Request: %d", 
-   //         config.metodo);
+
   flag = config.metodo;
-  ROS_INFO ("%d",flag);
+  if(flag == 1){
+      ROS_INFO("Integrazione passata in runge-kutta");
+  }
+  else{
+      ROS_INFO("Integrazione passata in eulero");
+  }
 }
 bool reset_zero_f(service::ResetZeroRequest &req, service::ResetZeroResponse &res){
 
