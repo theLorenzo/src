@@ -119,7 +119,7 @@ public:
     old_time = current_time;
     //message.header = msg_twist->header;
     message.header.stamp = ros::Time::now();
-    message.header.frame_id = "map";
+    message.header.frame_id = "world";
     message.child_frame_id = "integrazione_odom";
     tf::Quaternion myQuaternion;
     myQuaternion.setRPY(0, 0, theta);
@@ -158,7 +158,7 @@ public:
 
     //message.header = msg_twist->header;
     message_rk.header.stamp = ros::Time::now();
-    message_rk.header.frame_id = "map";
+    message_rk.header.frame_id = "world";
     message_rk.child_frame_id = "integrazione_odom";
     tf::Quaternion myQuaternion_rk;
     myQuaternion_rk.setRPY(0, 0, theta_rk);
@@ -173,7 +173,7 @@ public:
     message_rk.pose.pose.orientation.y = myQuaternion_rk[1];
     message_rk.pose.pose.orientation.z = myQuaternion_rk[2];
     message_rk.pose.pose.orientation.w = myQuaternion_rk[3];
-    //message_rk.header.frame_id = "map";
+    //message_rk.header.frame_id = "world";
     pub.publish(message_rk);
 
     messaggio_finale.odom = message_rk;

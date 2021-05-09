@@ -96,9 +96,9 @@ Visualization Manager:
         All Enabled: true
         integrazione_odom:
           Value: true
-        map:
-          Value: true
         odom:
+          Value: true
+        world:
           Value: true
       Marker Scale: 1
       Name: TF
@@ -106,7 +106,7 @@ Visualization Manager:
       Show Axes: true
       Show Names: true
       Tree:
-        map:
+        world:
           integrazione_odom:
             {}
           odom:
@@ -151,7 +151,7 @@ Visualization Manager:
   Global Options:
     Background Color: 48; 48; 48
     Default Light: true
-    Fixed Frame: map
+    Fixed Frame: world
     Frame Rate: 30
   Name: root
   Tools:
@@ -175,16 +175,16 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 7.381281852722168
+      Distance: 7.801041126251221
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0.46651196479797363
-        Y: -2.7874345779418945
-        Z: 0.03634719178080559
+        X: 1.4999055862426758
+        Y: -3.6513190269470215
+        Z: -0.029025442898273468
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
