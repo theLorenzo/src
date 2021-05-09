@@ -37,7 +37,7 @@ public:
 void callback(const nav_msgs::Odometry::ConstPtr &msg){
 
     messaggio.header.stamp = ros::Time::now();
-    messaggio.header.frame_id = "map";
+    messaggio.header.frame_id = "world";
     messaggio.child_frame_id = "odom";
     messaggio.pose.pose.position.x = msg->pose.pose.position.x;
     messaggio.pose.pose.position.y = msg->pose.pose.position.y;
@@ -63,7 +63,7 @@ void callback(const nav_msgs::Odometry::ConstPtr &msg){
         q[2] = msg->pose.pose.orientation.z;
         q[3] = msg->pose.pose.orientation.w;
         transform.setRotation(q);
-        br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "map", "odom"));
+        br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "world", "odom"));
 
         pub.publish(messaggio);
 

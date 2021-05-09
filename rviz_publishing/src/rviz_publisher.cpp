@@ -47,7 +47,7 @@ void callback(const nav_msgs::Odometry::ConstPtr &msg){
         q[2] = msg->pose.pose.orientation.z;
         q[3] = msg->pose.pose.orientation.w;
         transform.setRotation(q);
-        br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "map", "integrazione_odom"));
+        br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "world", "integrazione_odom"));
 
 }
 

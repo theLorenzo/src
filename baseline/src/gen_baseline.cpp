@@ -23,7 +23,7 @@ class generatore_baseline
     int counter_v = 0;
 
     float baseline=0;
-    float vettore_baseline[10000];
+    float vettore_baseline[11000];
     int flag_vettore_baseline = 0;
     int counter_b = 0;
 
@@ -78,8 +78,8 @@ public:
         gear_ratio = -1/(media_vettore_gr);
         ROS_INFO("Il gear ratio e' 1:%f", gear_ratio);
     }*/
-        /*
-           if (flag_vettore_baseline == 0){
+
+          /* if (flag_vettore_baseline == 0){
                    ROS_INFO("Sto calcolando la baseline...");
 
                    float vl_1 = (msg_wheel->speed1*0.10472*0.1575*0.026 + msg_wheel->speed3*0.10472*0.1575*0.026) / 2;
@@ -89,7 +89,7 @@ public:
                    if (omega_z != 0){
                        vettore_baseline[counter_b] = (vr_1+vl_1)/(omega_z);
                        counter_b++;
-                       if(counter_b == 10000){
+                       if(counter_b == 11000){
                            flag_vettore_baseline = 1;
                        }
                    }
@@ -97,32 +97,18 @@ public:
            else {
                    float media_vettore_baseline = media(vettore_baseline);
                    ROS_INFO("La baseline e' %f",media_vettore_baseline);
-               }
-           }*/
-        /*
-            //DEBUGGING: printa la baseline corrente
-            float vl = (msg_wheel->speed1 * 0.10472 * 0.1575 * 0.026 + msg_wheel->speed3 * 0.10472 * 0.1575 * 0.026) / 2;
-            float vr = (msg_wheel->speed2 * 0.10472 * 0.1575 * 0.026 + msg_wheel->speed4 * 0.10472 * 0.1575 * 0.026) / 2;
-            float omega_z = msg_odom->twist.twist.angular.z; //conversione da rpm a rad/s è moltiplicare per quella costante
-            //ROS_INFO("vl: %f, vr: %f, omega_z: %f", vl, vr, omega_z);
+               }*/
 
-            if (omega_z != 0) {
-                baseline_temp = 2*((vr - vl) / (2 * omega_z));
-                ROS_INFO("Baseline: %f", baseline_temp);
-                robotics_hw1::BaselineMsg messaggio;
-                messaggio.header.stamp = msg_wheel->header.stamp;
-                messaggio.data = baseline_temp;
-                pub.publish(messaggio);
-            }*/
+
     }
 
     float media(float vettore[]) // semplice funzione che calcola la media di un vettore di 100 valori
     {
         float somma;
-        for (int i = 0; i < 10001; ++i) {
+        for (int i = 0; i < 11001; ++i) {
             somma = somma + vettore[i];
         }
-        float media_fatta = somma/10000;
+        float media_fatta = somma/11000;
         return media_fatta;
     }
 };

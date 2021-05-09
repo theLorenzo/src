@@ -129,21 +129,7 @@ public:
             old_time = current_time;
             theta_old = theta_now;
            }
-        /*
-            //DEBUGGING: printa la baseline corrente
-            float vl = (msg_wheel->speed1 * 0.10472 * 0.1575 * 0.026 + msg_wheel->speed3 * 0.10472 * 0.1575 * 0.026) / 2;
-            float vr = (msg_wheel->speed2 * 0.10472 * 0.1575 * 0.026 + msg_wheel->speed4 * 0.10472 * 0.1575 * 0.026) / 2;
-            float omega_z = msg_odom->twist.twist.angular.z; //conversione da rpm a rad/s è moltiplicare per quella costante
-            //ROS_INFO("vl: %f, vr: %f, omega_z: %f", vl, vr, omega_z);
 
-            if (omega_z != 0) {
-                baseline_temp = 2*((vr - vl) / (2 * omega_z));
-                ROS_INFO("Baseline: %f", baseline_temp);
-                robotics_hw1::BaselineMsg messaggio;
-                messaggio.header.stamp = msg_wheel->header.stamp;
-                messaggio.data = baseline_temp;
-                pub.publish(messaggio);
-            }*/
 
 
     float media(float vettore[]) // semplice funzione che calcola la media di un vettore di 100 valori
