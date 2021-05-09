@@ -158,7 +158,7 @@ public:
 };
 
 int main(int argc, char **argv){
-    ros::init(argc, argv, "generatore_baseline");
+    ros::init(argc, argv, "generatore_baseline_gtpose");
     generatore_baseline my_generatore_baseline;
     return 0;
 }
