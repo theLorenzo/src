@@ -30,11 +30,11 @@ int main(int argc, char **argv)
           srv1.request.y = 0;
           srv1.request.theta = 0;
           client.call(srv1);
-          ROS_INFO("Posizione cambiata all'origine");
+          ROS_INFO("Pose setted to the origin");
     return 0;
   }
   else if (input == '2'){
-      //std::cout << "Ready to take the desider coordinates: ";
+          //std::cout << "Ready to take the desired coordinates: ";
           std::cout << "x coordinate: ";
           std::cin >> coordinata_x;
           std::cout << "y coordinate: ";
@@ -47,12 +47,12 @@ int main(int argc, char **argv)
           srv2.request.theta = coordinata_theta;
           client1.call(srv2);
           
-          ROS_INFO("Posizione cambiata alle coordinate [%f, %f, %f]", coordinata_x, coordinata_y, coordinata_theta);
+          ROS_INFO("Current pose setted to the given coordinates [%f, %f, %f]", coordinata_x, coordinata_y, coordinata_theta);
         return 0;
 
   }
   else {
-      ROS_INFO("Input invalido, riprovare...");
+      ROS_INFO("Invalide input, try again...");
       return 0;
   }
 

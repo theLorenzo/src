@@ -14,7 +14,6 @@ add_message_files(
   FILES
     MotorSpeed.msg
     WheelSpeeds.msg
-    BaselineMsg.msg
     FinalMsg.msg
 
 )

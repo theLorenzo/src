@@ -2,10 +2,10 @@
 #include "std_msgs/Float64.h"
 #include "std_msgs/Header.h"
 #include "nav_msgs/Odometry.h"
-#include<robotics_hw1/WheelSpeeds.h>
-#include<robotics_hw1/BaselineMsg.h>
-#include<geometry_msgs/TwistStamped.h>
-#include<geometry_msgs/PoseStamped.h>
+#include <robotics_hw1/WheelSpeeds.h>
+#include <robotics_hw1/BaselineMsg.h>
+#include <geometry_msgs/TwistStamped.h>
+#include <geometry_msgs/PoseStamped.h>
 #include <message_filters/subscriber.h>
 #include <message_filters/time_synchronizer.h>
 #include <message_filters/sync_policies/exact_time.h>
@@ -59,12 +59,11 @@ public:
     }
     void callback1(const geometry_msgs::PoseStamped::ConstPtr& msg_odom,
                   const robotics_hw1::WheelSpeeds::ConstPtr& msg_wheel) {
-        // ROS_INFO("SONO ENTRATO NELLA CALLBACK");
-
+        
 
         if (flag_time == 0) {
 
-                old_time = msg_odom->header.stamp.toSec();    //se è il primo ciclo, prende come valore old_time il valore della bag.
+                old_time = msg_odom->header.stamp.toSec();    
                 float qx = msg_odom->pose.orientation.x;
                 float qy = msg_odom->pose.orientation.y;
                 float qz = msg_odom->pose.orientation.z;
@@ -81,7 +80,8 @@ public:
 
                 theta_old = yaw;
                 flag_time = 1;
-            } else  if (flag_wait == 3){
+            } 
+            else  if (flag_wait == 3){
                 flag_wait = 0;
                 current_time = msg_odom->header.stamp.toSec();
                 float qx = msg_odom->pose.orientation.x;
@@ -99,16 +99,15 @@ public:
 
                 tf::Matrix3x3(q).getRPY(roll, pitch, yaw);  // calcola yaw dal quaternione di gt_pose
 
-                //ROS_INFO("%f, %f, %f", roll, pitch, yaw);
+                
                 theta_now = yaw;
 
 
                 float vl_1 = (msg_wheel->speed1 * 0.10472 * 0.1575 * 0.026 + msg_wheel->speed3 * 0.10472 * 0.1575 * 0.026) /2;
                 float vr_1 = (msg_wheel->speed2 * 0.10472 * 0.1575 * 0.026 + msg_wheel->speed4 * 0.10472 * 0.1575 * 0.026) /2;
-                float omega_z = (theta_now - theta_old) / (current_time - old_time);     //calcola omega_z facendo la derivata.
+                float omega_z = (theta_now - theta_old) / (current_time - old_time);     //computes omega_z 
                 float baseline = (vr_1+vl_1)/omega_z;
-                //ROS_INFO("omega: %f ", omega_z);
-               //ROS_INFO("baseline: %f ", baseline);
+               
 
 
                 if (((omega_z > 0.1 && omega_z < 0.8) || (omega_z > -0.8 && omega_z < -0.1)) && theta_now != theta_old) {
@@ -126,7 +125,7 @@ public:
 
 
 
-    float media(float vettore[]) // semplice funzione che calcola la media di un vettore di 100 valori
+    float media(float vettore[]) // computes the mean of a vector of 1000 terms
     {
         float somma;
         for (int i = 0; i < 1001; ++i) {
