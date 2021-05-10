@@ -22,18 +22,18 @@ class generatore_baseline
 {
 
     float baseline=0;
-    float vettore_baseline[1000];
     int flag_vettore_baseline = 0;
     int counter_b = 0;
     float baseline_temp = 0;
     int flag_time = 0;
+    int flag_wait = 0;
 
     double old_time;
     double current_time;
     float theta_old;
     float theta_now;
     float media_now;
-    float num;
+    float num = 0;
 
 
 private:
@@ -59,76 +59,70 @@ public:
     }
     void callback1(const geometry_msgs::PoseStamped::ConstPtr& msg_odom,
                   const robotics_hw1::WheelSpeeds::ConstPtr& msg_wheel) {
-         // ROS_INFO("SONO ENTRATO NELLA CALLBACK");
+        // ROS_INFO("SONO ENTRATO NELLA CALLBACK");
 
 
-           if (flag_vettore_baseline == 0){
-                   ROS_INFO("Sto calcolando la baseline...");
+        if (flag_time == 0) {
 
-               if (flag_time == 0){
+                old_time = msg_odom->header.stamp.toSec();    //se è il primo ciclo, prende come valore old_time il valore della bag.
+                float qx = msg_odom->pose.orientation.x;
+                float qy = msg_odom->pose.orientation.y;
+                float qz = msg_odom->pose.orientation.z;
+                float qw = msg_odom->pose.orientation.w;
 
-                   old_time = msg_odom->header.stamp.toSec();    //se è il primo ciclo, prende come valore old_time il valore della bag.
-                   float qx = msg_odom->pose.orientation.x;
-                   float qy = msg_odom->pose.orientation.y;
-                   float qz = msg_odom->pose.orientation.z;
-                   float qw = msg_odom->pose.orientation.w;
+                double roll, pitch, yaw;
+                tf::Quaternion q;
+                q[0] = qx;
+                q[1] = qy;
+                q[2] = qz;
+                q[3] = qw;
 
-                   double roll, pitch, yaw;
-                   tf::Quaternion q;
-                   q[0] = qx;
-                   q[1] = qy;
-                   q[2] = qz;
-                   q[3] = qw;
+                tf::Matrix3x3(q).getRPY(roll, pitch, yaw);
 
-                   tf::Matrix3x3(q).getRPY(roll, pitch, yaw);
-
-                   theta_old = yaw;
-                   flag_time = 1;
-               }
-
-               current_time = msg_odom->header.stamp.toSec();
-               float qx = msg_odom->pose.orientation.x;
-               float qy = msg_odom->pose.orientation.y;
-               float qz = msg_odom->pose.orientation.z;
-               float qw = msg_odom->pose.orientation.w;
+                theta_old = yaw;
+                flag_time = 1;
+            } else  if (flag_wait == 3){
+                flag_wait = 0;
+                current_time = msg_odom->header.stamp.toSec();
+                float qx = msg_odom->pose.orientation.x;
+                float qy = msg_odom->pose.orientation.y;
+                float qz = msg_odom->pose.orientation.z;
+                float qw = msg_odom->pose.orientation.w;
 
 
-               double roll, pitch, yaw;
-               tf::Quaternion q;
-               q[0] = qx;
-               q[1] = qy;
-               q[2] = qz;
-               q[3] = qw;
+                double roll, pitch, yaw;
+                tf::Quaternion q;
+                q[0] = qx;
+                q[1] = qy;
+                q[2] = qz;
+                q[3] = qw;
 
-               tf::Matrix3x3(q).getRPY(roll, pitch, yaw);  // calcola yaw dal quaternione di gt_pose
+                tf::Matrix3x3(q).getRPY(roll, pitch, yaw);  // calcola yaw dal quaternione di gt_pose
 
-               theta_now = yaw;
-
-
-               float vl_1 = (msg_wheel->speed1*0.10472*0.1575*0.026 + msg_wheel->speed3*0.10472*0.1575*0.026) / 2;
-               float vr_1 = (msg_wheel->speed2*0.10472*0.1575*0.026 + msg_wheel->speed4*0.10472*0.1575*0.026) / 2;
-               float omega_z = (theta_now-theta_old)/(current_time-old_time);     //calcola omega_z facendo la derivata.
-               ROS_INFO("omega: %f", omega_z);
+                //ROS_INFO("%f, %f, %f", roll, pitch, yaw);
+                theta_now = yaw;
 
 
-               if (((omega_z > 0.05 && omega_z < 1.5)||(omega_z>-1.5 && omega_z<-0.05)) && theta_now!= theta_old){
-                   vettore_baseline[counter_b] = (vr_1+vl_1)/(omega_z);
-                   counter_b++;
-                   num = num + omega_z;
-                   media_now = num/counter_b;
-                   ROS_INFO("media: %f", media_now);     //printa la media ad ogni ciclo
-                   if(counter_b == 1000){
-                       flag_vettore_baseline = 1;
-                   }
-                   }
-               }
-           else {
-                   float media_vettore_baseline = media(vettore_baseline);
-                   ROS_INFO("La baseline e' %f",media_vettore_baseline);
-               }
+                float vl_1 = (msg_wheel->speed1 * 0.10472 * 0.1575 * 0.026 + msg_wheel->speed3 * 0.10472 * 0.1575 * 0.026) /2;
+                float vr_1 = (msg_wheel->speed2 * 0.10472 * 0.1575 * 0.026 + msg_wheel->speed4 * 0.10472 * 0.1575 * 0.026) /2;
+                float omega_z = (theta_now - theta_old) / (current_time - old_time);     //calcola omega_z facendo la derivata.
+                float baseline = (vr_1+vl_1)/omega_z;
+                //ROS_INFO("omega: %f ", omega_z);
+               //ROS_INFO("baseline: %f ", baseline);
+
+
+                if (((omega_z > 0.1 && omega_z < 0.8) || (omega_z > -0.8 && omega_z < -0.1)) && theta_now != theta_old) {
+                    counter_b++;
+                    num = num + ((vr_1 + vl_1) / omega_z);
+                    media_now = num / counter_b;
+                    ROS_INFO("media baseline: %f", media_now);     //printa la media ad ogni ciclo
+                }
+            }
+            else flag_wait++;
             old_time = current_time;
             theta_old = theta_now;
-           }
+
+        }
 
 
 

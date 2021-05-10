@@ -18,12 +18,12 @@ class generatore_baseline
 
 
     float gear_ratio=0;
-    float vettore_gr[100];
+    float vettore_gr[10000];
     int flag_vettore_gr = 0;
     int counter_v = 0;
 
     float baseline=0;
-    float vettore_baseline[11000];
+    float vettore_baseline[10000];
     int flag_vettore_baseline = 0;
     int counter_b = 0;
 
@@ -56,7 +56,7 @@ public:
                   const robotics_hw1::WheelSpeeds::ConstPtr& msg_wheel) {
         //ROS_INFO("SONO ENTRATO NELLA CALLBACK");
 
-/*
+
         //si calcola il gear ratio:
     if (flag_vettore_gr == 0){                 //se il flag è 0 il vettore di valori gr non è ancora pieno
         ROS_INFO("Sto calcolando il gear ratio...");
@@ -68,7 +68,7 @@ public:
         if (vr != vl && (vx>0.1 || vx<-0.1)){          // controllo che il denominatore non si annulli
             vettore_gr[counter_v] = 2 * vx / (0.1575 * (vl - vr)); //calcolo il gear ratio corrente e lo metto nel vettore
             counter_v++;
-            if(counter_v == 100){ // se il vettore è pieno il flag scatta
+            if(counter_v == 10000){ // se il vettore è pieno il flag scatta
                 flag_vettore_gr = 1;
             }
         }
@@ -77,9 +77,9 @@ public:
         float media_vettore_gr = media(vettore_gr);
         gear_ratio = -1/(media_vettore_gr);
         ROS_INFO("Il gear ratio e' 1:%f", gear_ratio);
-    }*/
+    }
 
-          /* if (flag_vettore_baseline == 0){
+           if (flag_vettore_baseline == 0){
                    ROS_INFO("Sto calcolando la baseline...");
 
                    float vl_1 = (msg_wheel->speed1*0.10472*0.1575*0.026 + msg_wheel->speed3*0.10472*0.1575*0.026) / 2;
@@ -89,7 +89,7 @@ public:
                    if (omega_z != 0){
                        vettore_baseline[counter_b] = (vr_1+vl_1)/(omega_z);
                        counter_b++;
-                       if(counter_b == 11000){
+                       if(counter_b == 10000){
                            flag_vettore_baseline = 1;
                        }
                    }
@@ -97,7 +97,7 @@ public:
            else {
                    float media_vettore_baseline = media(vettore_baseline);
                    ROS_INFO("La baseline e' %f",media_vettore_baseline);
-               }*/
+               }
 
 
     }
@@ -105,10 +105,10 @@ public:
     float media(float vettore[]) // semplice funzione che calcola la media di un vettore di 100 valori
     {
         float somma;
-        for (int i = 0; i < 11001; ++i) {
+        for (int i = 0; i < 10001; ++i) {
             somma = somma + vettore[i];
         }
-        float media_fatta = somma/11000;
+        float media_fatta = somma/10000;
         return media_fatta;
     }
 };
