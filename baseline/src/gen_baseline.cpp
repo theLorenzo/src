@@ -17,12 +17,12 @@ class generatore_baseline
 
 
     float gear_ratio=0;
-    float vettore_gr[100];
+    float vettore_gr[9000];
     int flag_vettore_gr = 0;
     int counter_v = 0;
 
     float baseline=0;
-    float vettore_baseline[11000];
+    float vettore_baseline[9000];
     int flag_vettore_baseline = 0;
     int counter_b = 0;
 
@@ -66,7 +66,7 @@ public:
            vettore_gr[counter_v] = 2 * vx / (0.1575 * (vl - vr)); //current gear ratio
            counter_v++;
            
-           if(counter_v == 100){ //vettore_gr full
+           if(counter_v == 9000){ //vettore_gr full
              flag_vettore_gr = 1;
            }
          }
@@ -87,10 +87,10 @@ public:
          float vr_1 = (msg_wheel->speed2*0.10472*0.1575*0.026 + msg_wheel->speed4*0.10472*0.1575*0.026) / 2;
          float omega_z = msg_odom->twist.twist.angular.z;
 
-         if (omega_z != 0){
+         if (omega_z > 0.02 || omega_z < -0.02){
              vettore_baseline[counter_b] = (vr_1+vl_1)/(omega_z);
              counter_b++;
-             if(counter_b == 11000){
+             if(counter_b == 9000){
                 flag_vettore_baseline = 1;
              }
          }
@@ -107,11 +107,11 @@ public:
     float media(float vettore[]) //computes the mean of a vector of 11000 terms
     {
         float somma;
-        for (int i = 0; i < 11001; ++i) {
+        for (int i = 0; i < 9001; ++i) {
             somma = somma + vettore[i];
         }
         
-        float media_fatta = somma/11000;
+        float media_fatta = somma/9000;
         return media_fatta;
     }
 };

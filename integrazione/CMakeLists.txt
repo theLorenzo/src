@@ -16,6 +16,6 @@ include_directories(include ${catkin_INCLUDE_DIRS})
 
 
 add_executable(integratore src/integratore.cpp)
-add_dependencies(integratore ${integrazione}_gencfg)
+##add_dependencies(integratore ${integrazione}_gencfg)
 target_link_libraries(integratore ${catkin_LIBRARIES})
 

@@ -9,7 +9,8 @@
 class generatore_twist {
     float vl;
     float vr;
-    float baseline = 1.012144; //appareant baseline computed in gen_baseline node
+    float baseline = 1.030663; //appareant baseline computed in gen_baseline node
+    float gear_ratio = 1/38.218040;
 
     geometry_msgs::TwistStamped messaggio_twist;
 
@@ -37,8 +38,8 @@ public:
     }
 
     void callback2(const robotics_hw1::WheelSpeeds::ConstPtr& msg_wheel){
-        vl = (msg_wheel->speed1 * 0.10472 * 0.1575 * 0.026 + msg_wheel->speed3 * 0.10472 * 0.1575 * 0.026) / 2;
-        vr = (msg_wheel->speed2 * 0.10472 * 0.1575 * 0.026 + msg_wheel->speed4 * 0.10472 * 0.1575 * 0.026) / 2;
+        vl = (msg_wheel->speed1 * 0.10472 * 0.1575 * gear_ratio + msg_wheel->speed3 * 0.10472 * 0.1575 * gear_ratio) / 2;
+        vr = (msg_wheel->speed2 * 0.10472 * 0.1575 * gear_ratio + msg_wheel->speed4 * 0.10472 * 0.1575 * gear_ratio) / 2;
         messaggio_twist.twist.linear.x = (vr-vl)/2;
         messaggio_twist.twist.linear.y = 0;
         messaggio_twist.twist.linear.z = 0;
