@@ -64,7 +64,7 @@ public:
         q[2] = msg->pose.pose.orientation.z;
         q[3] = msg->pose.pose.orientation.w;
         transform.setRotation(q);
-        br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "world", "odom"));
+        br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "world", "scout_odom"));
 
         pub.publish(messaggio);
 
