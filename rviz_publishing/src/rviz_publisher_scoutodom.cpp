@@ -19,6 +19,7 @@ private:
     ros::NodeHandle n;
     tf::TransformBroadcaster br;
     tf::Transform transform;
+    tf::Transform transform2;
     ros::Subscriber sub;
     ros::Publisher pub;
 
@@ -57,6 +58,18 @@ public:
         messaggio.twist.twist.angular.z = msg->twist.twist.angular.z;
 
 
+
+        // definition of the tf between map and scout_odom
+        transform2.setOrigin(tf::Vector3(0,0,0));
+        tf::Quaternion q2;
+        q2[0] = 0;
+        q2[1] = 0;
+        q2[2] = 0;
+        q2[3] = 1;
+        transform2.setRotation(q2);
+        br.sendTransform(tf::StampedTransform(transform2, ros::Time::now(), "map", "scout_odom"));
+
+
         transform.setOrigin( tf::Vector3(msg->pose.pose.position.x, msg->pose.pose.position.y, 0) );
         tf::Quaternion q;
         q[0] = msg->pose.pose.orientation.x;
@@ -64,7 +77,8 @@ public:
         q[2] = msg->pose.pose.orientation.z;
         q[3] = msg->pose.pose.orientation.w;
         transform.setRotation(q);
-        br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "world", "scout_odom"));
+        br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "scout_odom", "base_link_scoutodom"));
+
 
         pub.publish(messaggio);
 
