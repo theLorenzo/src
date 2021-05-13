@@ -20,6 +20,20 @@
 	<param name="starting_omega" value="0" />
 
 
+	<node pkg="tf"
+		  type="static_transform_publisher"
+		  name="world_map"
+		  args="0 0 0 0 0 0 1 world map 100" />
+	<node pkg="tf"
+		  type="static_transform_publisher"
+		  name="map_scout_odom"
+		  args="0 0 0 0 0 0 world scout_odom 100" />
+	<node pkg="tf"
+		  type="static_transform_publisher"
+		  name="mapo_integrazione_odom"
+		  args="0 0 0 0 0 0 world integrazione_odom 100" />
+
+
 <node pkg="rviz_publishing" type = "rviz_publisher" name = "rviz_publisher"/>
 <node pkg="rviz_publishing" type = "rviz_publisher_scoutodom" name = "rviz_publisher_scoutodom"/>
 <node pkg="rqt_tf_tree" type = "rqt_tf_tree" name = "rqt_tf_tree"/>
