@@ -113,7 +113,7 @@ public:
       y_old_rk = y;
       old_time = current_time;
       message.header.stamp = ros::Time::now();
-      message.header.frame_id = "integrazione_odom";
+      message.header.frame_id = "odom";
       message.child_frame_id = "base_link_integrazione";
       tf::Quaternion myQuaternion;
       myQuaternion.setRPY(0, 0, theta);
@@ -150,7 +150,7 @@ public:
       y_old = y_rk;
 
       message_rk.header.stamp = ros::Time::now();
-      message_rk.header.frame_id = "integrazione_odom";
+      message_rk.header.frame_id = "odom";
       message_rk.child_frame_id = "base_link_integrazione";
       tf::Quaternion myQuaternion_rk;
       myQuaternion_rk.setRPY(0, 0, theta_rk);

@@ -39,8 +39,8 @@ public:
     void callback(const nav_msgs::Odometry::ConstPtr &msg){
 
         messaggio.header.stamp = ros::Time::now();
-        messaggio.header.frame_id = "world";
-        messaggio.child_frame_id = "odom";
+        messaggio.header.frame_id = "odom";
+        messaggio.child_frame_id = "base_link_scoutodom";
         messaggio.pose.pose.position.x = msg->pose.pose.position.x;
         messaggio.pose.pose.position.y = msg->pose.pose.position.y;
         messaggio.pose.pose.position.z= msg->pose.pose.position.z;
@@ -59,7 +59,7 @@ public:
 
 
 
-        // definition of the tf between map and scout_odom
+        // definition of the tf between map and odom
         transform2.setOrigin(tf::Vector3(0,0,0));
         tf::Quaternion q2;
         q2[0] = 0;
@@ -67,7 +67,7 @@ public:
         q2[2] = 0;
         q2[3] = 1;
         transform2.setRotation(q2);
-        br.sendTransform(tf::StampedTransform(transform2, ros::Time::now(), "map", "scout_odom"));
+        br.sendTransform(tf::StampedTransform(transform2, ros::Time::now(), "map", "odom"));
 
 
         transform.setOrigin( tf::Vector3(msg->pose.pose.position.x, msg->pose.pose.position.y, 0) );
@@ -77,7 +77,7 @@ public:
         q[2] = msg->pose.pose.orientation.z;
         q[3] = msg->pose.pose.orientation.w;
         transform.setRotation(q);
-        br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "scout_odom", "base_link_scoutodom"));
+        br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "odom", "base_link_scoutodom"));
 
 
         pub.publish(messaggio);
