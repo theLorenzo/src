@@ -11,5 +11,6 @@ catkin_package( CATKIN_DEPENDS geometry_msgs message_filters robotics_hw1 std_ms
 include_directories(include ${catkin_INCLUDE_DIRS})
 
 add_executable(sincronizzazione src/sincronizzatore.cpp)
+add_dependencies(sincronizzazione robotics_hw1_generate_messages_cpp)
 target_link_libraries(sincronizzazione ${catkin_LIBRARIES})
 

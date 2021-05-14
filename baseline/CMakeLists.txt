@@ -13,9 +13,11 @@ include_directories(include ${catkin_INCLUDE_DIRS})
 
 
 add_executable(baseline src/gen_baseline.cpp)
+add_dependencies(baseline robotics_hw1_generate_messages_cpp)
 target_link_libraries(baseline ${catkin_LIBRARIES})
 
 
 add_executable(baseline_gtpose src/gen_baseline_gtpose.cpp)
+add_dependencies(baseline_gtpose robotics_hw1_generate_messages_cpp)
 target_link_libraries(baseline_gtpose ${catkin_LIBRARIES})
 

@@ -14,6 +14,7 @@ include_directories(include ${catkin_INCLUDE_DIRS})
 
 
 add_executable(generazione src/generatore.cpp)
+add_dependencies(generazione robotics_hw1_generate_messages_cpp)
 target_link_libraries(generazione ${catkin_LIBRARIES})
 
 
