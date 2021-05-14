@@ -13,7 +13,6 @@
 -->
 
 
-
 <node pkg="generazione" type="generazione" name="generatore" output="screen"/>
 
 <node pkg="rqt_reconfigure" type="rqt_reconfigure" name="rqt_reconfigure" output="screen"/>
@@ -27,6 +26,8 @@
 
 <node pkg="rviz_publishing" type = "rviz_publisher" name = "rviz_publisher"/>
 <node pkg="rviz_publishing" type = "rviz_publisher_scoutodom" name = "rviz_publisher_scoutodom"/>
+
+	<node pkg="rviz_publishing" type = "rviz_publisher_gtpose" name = "rviz_publisher_gtpose"/>
 <node pkg="rqt_tf_tree" type = "rqt_tf_tree" name = "rqt_tf_tree"/>
 
 

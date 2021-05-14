@@ -48,12 +48,12 @@ void callback(const nav_msgs::Odometry::ConstPtr &msg){
         br.sendTransform(tf::StampedTransform(transform2, ros::Time::now(), "world", "map"));
 
         // definition of the static tf between map and odom
-        transform3.setOrigin(tf::Vector3(0,0,0));
+        transform3.setOrigin(tf::Vector3(-0.832142114639,0.426361680031,0.324720174074));
         tf::Quaternion q3;
-        q3[0] = 0;
-        q3[1] = 0;
-        q3[2] = 0;
-        q3[3] = 1;
+        q3[0] =0.0221652016044;
+        q3[1] =-0.0104456143454;
+        q3[2] =-0.533567428589;
+        q3[3] =0.845402538776;
         transform3.setRotation(q3);
         br.sendTransform(tf::StampedTransform(transform3, ros::Time::now(), "map", "odom"));
 
