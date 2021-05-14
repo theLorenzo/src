@@ -4,10 +4,10 @@
 #include "std_msgs/Float64.h"
 #include "std_msgs/Header.h"
 #include "nav_msgs/Odometry.h"
-#include<geometry_msgs/TwistStamped.h>
+#include <geometry_msgs/TwistStamped.h>
 #include <boost/bind.hpp>
 #define _USE_MATH_DEFINES
-#include<math.h>
+#include <math.h>
 #include <tf2/LinearMath/Quaternion.h>
 
 
@@ -19,18 +19,13 @@ private:
     ros::NodeHandle n;
     tf::TransformBroadcaster br;
     tf::Transform transform;
-    //tf::TransformBroadcaster br2;
-    //tf::Transform transform2;
     ros::Subscriber sub;
-    //ros::Subscriber sub2;
-
+    
 public:
      rviz_publisher(){
 
   	sub = n.subscribe("/integrazione_odom", 200, &rviz_publisher::callback, this);
-  	//sub2 = n.subscribe("/scot_odom", 200, &rviz_publisher::callback2, this);
-
-
+  	
          while (ros::ok()){
              ros::spin();
          }

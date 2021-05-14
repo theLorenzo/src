@@ -6,9 +6,9 @@
 
 <node pkg="sincronizzazione" type="sincronizzazione" name="sincronizzatore" output="screen"/>
 
-<node pkg="baseline" type="baseline" name="gen_baseline" output="screen"/>
+<!-- <node pkg="baseline" type="baseline" name="gen_baseline" output="screen"/>
 
-<node pkg="baseline" type="baseline" name="gen_baseline_gtpose" output="screen"/>
+<node pkg="baseline" type="baseline" name="gen_baseline_gtpose" output="screen"/> -->
 
 <node pkg="generazione" type="generazione" name="generatore" output="screen"/>
 
