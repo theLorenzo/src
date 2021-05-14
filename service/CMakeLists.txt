@@ -25,6 +25,8 @@ add_executable(client src/client.cpp)
 target_link_libraries(client ${catkin_LIBRARIES})
 add_dependencies(client ${catkin_EXPORTED_TARGETS})
 
+add_dependencies(client ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
 
 
 
