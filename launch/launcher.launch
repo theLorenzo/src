@@ -6,9 +6,6 @@
 
 <node pkg="sincronizzazione" type="sincronizzazione" name="sincronizzatore" output="screen"/>
 
-<node pkg="baseline" type="baseline" name="gen_baseline" output="screen"/>
-
-<node pkg="baseline" type="baseline" name="gen_baseline_gtpose" output="screen"/>
 
 <node pkg="generazione" type="generazione" name="generatore" output="screen"/>
 
@@ -18,6 +15,7 @@
 	<param name="starting_x" value="0" />
 	<param name="starting_y" value="0" />
 	<param name="starting_omega" value="0" />
+
 
 
 <node pkg="rviz_publishing" type = "rviz_publisher" name = "rviz_publisher"/>

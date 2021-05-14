@@ -2,9 +2,8 @@
 #include "std_msgs/Float64.h"
 #include "std_msgs/Header.h"
 #include "nav_msgs/Odometry.h"
-#include<robotics_hw1/WheelSpeeds.h>
-#include<robotics_hw1/BaselineMsg.h>
-#include<geometry_msgs/TwistStamped.h>
+#include <robotics_hw1/WheelSpeeds.h>
+#include <geometry_msgs/TwistStamped.h>
 #include <message_filters/subscriber.h>
 #include <message_filters/time_synchronizer.h>
 #include <message_filters/sync_policies/exact_time.h>
@@ -18,12 +17,12 @@ class generatore_baseline
 
 
     float gear_ratio=0;
-    float vettore_gr[100];
+    float vettore_gr[9000];
     int flag_vettore_gr = 0;
     int counter_v = 0;
 
     float baseline=0;
-    float vettore_baseline[11000];
+    float vettore_baseline[9000];
     int flag_vettore_baseline = 0;
     int counter_b = 0;
 
@@ -43,72 +42,76 @@ public:
     generatore_baseline(){
         sub1.subscribe(n, "/scout_odom", 20);
         sub2.subscribe(n, "/vettore_motori", 20);
-        pub = n.advertise<robotics_hw1::BaselineMsg>("baseline_topic", 1000);
-
+        
         while (ros::ok()){
-            //ROS_INFO("SONO ENTRATO NEL WHILE");
-            message_filters::Synchronizer<MySyncPolicy> sync(MySyncPolicy(100), sub1, sub2);
-            sync.registerCallback(boost::bind(&generatore_baseline::callback1, this, _1, _2));
-           ros::spin();
+          message_filters::Synchronizer<MySyncPolicy> sync(MySyncPolicy(100), sub1, sub2);
+          sync.registerCallback(boost::bind(&generatore_baseline::callback1, this, _1, _2));
+          ros::spin();
         }
     }
+    
     void callback1(const nav_msgs::Odometry::ConstPtr& msg_odom,
                   const robotics_hw1::WheelSpeeds::ConstPtr& msg_wheel) {
-        //ROS_INFO("SONO ENTRATO NELLA CALLBACK");
+      
+      //Gear ratio computation:
+      
+      if (flag_vettore_gr == 0){        //if ==0 vettore_gr not full yet
+         ROS_INFO("Sto calcolando il gear ratio...");
 
-/*
-        //si calcola il gear ratio:
-    if (flag_vettore_gr == 0){                 //se il flag è 0 il vettore di valori gr non è ancora pieno
-        ROS_INFO("Sto calcolando il gear ratio...");
+         float vl = (msg_wheel->speed1*0.10472 + msg_wheel->speed3*0.10472) / 2; 
+         float vr = (msg_wheel->speed2*0.10472 + msg_wheel->speed4*0.10472) / 2;
+         float vx = msg_odom->twist.twist.linear.x;
 
-        float vl = (msg_wheel->speed1*0.10472 + msg_wheel->speed3*0.10472) / 2; //prendo i valori
-        float vr = (msg_wheel->speed2*0.10472 + msg_wheel->speed4*0.10472) / 2;
-        float vx = msg_odom->twist.twist.linear.x;
-
-        if (vr != vl && (vx>0.1 || vx<-0.1)){          // controllo che il denominatore non si annulli
-            vettore_gr[counter_v] = 2 * vx / (0.1575 * (vl - vr)); //calcolo il gear ratio corrente e lo metto nel vettore
-            counter_v++;
-            if(counter_v == 100){ // se il vettore è pieno il flag scatta
-                flag_vettore_gr = 1;
-            }
-        }
-    }
-    else {  // se il flag scatta a 1 si entra qui, dove si fa la media del vettore e si printa
+         if (vr != vl && (vx>0.1 || vx<-0.1)){     //condition: denominator must be different from zero
+           vettore_gr[counter_v] = 2 * vx / (0.1575 * (vl - vr)); //current gear ratio
+           counter_v++;
+           
+           if(counter_v == 9000){ //vettore_gr full
+             flag_vettore_gr = 1;
+           }
+         }
+      }
+      
+      else {  //if flag == 1 proceeds to compute the mean and print it
         float media_vettore_gr = media(vettore_gr);
         gear_ratio = -1/(media_vettore_gr);
         ROS_INFO("Il gear ratio e' 1:%f", gear_ratio);
-    }*/
+      }
+      
+      //Baseline computation:
+      
+      if (flag_vettore_baseline == 0){
+         ROS_INFO("Sto calcolando la baseline...");
 
-          /* if (flag_vettore_baseline == 0){
-                   ROS_INFO("Sto calcolando la baseline...");
+         float vl_1 = (msg_wheel->speed1*0.10472*0.1575*0.026 + msg_wheel->speed3*0.10472*0.1575*0.026) / 2;
+         float vr_1 = (msg_wheel->speed2*0.10472*0.1575*0.026 + msg_wheel->speed4*0.10472*0.1575*0.026) / 2;
+         float omega_z = msg_odom->twist.twist.angular.z;
 
-                   float vl_1 = (msg_wheel->speed1*0.10472*0.1575*0.026 + msg_wheel->speed3*0.10472*0.1575*0.026) / 2;
-                   float vr_1 = (msg_wheel->speed2*0.10472*0.1575*0.026 + msg_wheel->speed4*0.10472*0.1575*0.026) / 2;
-                   float omega_z = msg_odom->twist.twist.angular.z;
-
-                   if (omega_z != 0){
-                       vettore_baseline[counter_b] = (vr_1+vl_1)/(omega_z);
-                       counter_b++;
-                       if(counter_b == 11000){
-                           flag_vettore_baseline = 1;
-                       }
-                   }
-               }
-           else {
-                   float media_vettore_baseline = media(vettore_baseline);
-                   ROS_INFO("La baseline e' %f",media_vettore_baseline);
-               }*/
+         if (omega_z > 0.02 || omega_z < -0.02){
+             vettore_baseline[counter_b] = (vr_1+vl_1)/(omega_z);
+             counter_b++;
+             if(counter_b == 9000){
+                flag_vettore_baseline = 1;
+             }
+         }
+      }
+      
+      else {
+            float media_vettore_baseline = media(vettore_baseline);
+            ROS_INFO("La baseline e' %f",media_vettore_baseline);
+      }
 
 
     }
 
-    float media(float vettore[]) // semplice funzione che calcola la media di un vettore di 100 valori
+    float media(float vettore[]) //computes the mean of a vector of 11000 terms
     {
         float somma;
-        for (int i = 0; i < 11001; ++i) {
+        for (int i = 0; i < 9001; ++i) {
             somma = somma + vettore[i];
         }
-        float media_fatta = somma/11000;
+        
+        float media_fatta = somma/9000;
         return media_fatta;
     }
 };
