@@ -19,6 +19,8 @@ private:
     ros::NodeHandle n;
     tf::TransformBroadcaster br;
     tf::Transform transform;
+    tf::Transform transform2;
+    tf::Transform transform3;
     ros::Subscriber sub;
     
 public:
@@ -35,6 +37,28 @@ public:
 
 void callback(const nav_msgs::Odometry::ConstPtr &msg){
 
+        // definition of the static tf between world and map
+        transform2.setOrigin(tf::Vector3(0,0,0));
+        tf::Quaternion q2;
+        q2[0] = 0;
+        q2[1] = 0;
+        q2[2] = 0;
+        q2[3] = 1;
+        transform2.setRotation(q2);
+        br.sendTransform(tf::StampedTransform(transform2, ros::Time::now(), "world", "map"));
+
+        // definition of the static tf between map and odom
+        transform3.setOrigin(tf::Vector3(0,0,0));
+        tf::Quaternion q3;
+        q3[0] = 0;
+        q3[1] = 0;
+        q3[2] = 0;
+        q3[3] = 1;
+        transform3.setRotation(q3);
+        br.sendTransform(tf::StampedTransform(transform3, ros::Time::now(), "map", "odom"));
+
+
+         // definition of the tf between odom and base_link_integrazione
         transform.setOrigin( tf::Vector3(msg->pose.pose.position.x, msg->pose.pose.position.y, 0) );
         tf::Quaternion q;
         q[0] = msg->pose.pose.orientation.x;
@@ -42,7 +66,9 @@ void callback(const nav_msgs::Odometry::ConstPtr &msg){
         q[2] = msg->pose.pose.orientation.z;
         q[3] = msg->pose.pose.orientation.w;
         transform.setRotation(q);
-        br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "world", "integrazione_odom"));
+        br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "odom", "base_link_integrazione"));
+
+
 
 }
 
