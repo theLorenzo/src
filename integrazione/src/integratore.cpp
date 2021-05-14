@@ -3,7 +3,6 @@
 #include "std_msgs/Header.h"
 #include "nav_msgs/Odometry.h"
 #include<robotics_hw1/WheelSpeeds.h>
-#include<robotics_hw1/BaselineMsg.h>
 #include<robotics_hw1/FinalMsg.h>
 #include<geometry_msgs/TwistStamped.h>
 #include <boost/bind.hpp>

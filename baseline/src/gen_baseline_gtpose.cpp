@@ -3,7 +3,6 @@
 #include "std_msgs/Header.h"
 #include "nav_msgs/Odometry.h"
 #include <robotics_hw1/WheelSpeeds.h>
-#include <robotics_hw1/BaselineMsg.h>
 #include <geometry_msgs/TwistStamped.h>
 #include <geometry_msgs/PoseStamped.h>
 #include <message_filters/subscriber.h>
@@ -40,16 +39,14 @@ private:
     ros::NodeHandle n;
     message_filters::Subscriber<geometry_msgs::PoseStamped> sub1;
     message_filters::Subscriber<robotics_hw1::WheelSpeeds> sub2;
-    ros::Publisher pub;
-
+    
     typedef message_filters::sync_policies::ApproximateTime<geometry_msgs::PoseStamped, robotics_hw1::WheelSpeeds> MySyncPolicy;
 
 public:
     generatore_baseline(){
         sub1.subscribe(n, "/gt_pose", 20);
         sub2.subscribe(n, "/vettore_motori", 20);
-        pub = n.advertise<robotics_hw1::BaselineMsg>("baseline_topic", 1000);
-
+        
         while (ros::ok()){
             ROS_INFO("SONO ENTRATO NEL WHILE");
             message_filters::Synchronizer<MySyncPolicy> sync(MySyncPolicy(100), sub1, sub2);
