@@ -7,13 +7,6 @@
 <node pkg="sincronizzazione" type="sincronizzazione" name="sincronizzatore" output="screen"/>
 
 
-
-<!--	<node pkg="tf" type="static_transform_publisher" name="world_map" args="0 0 0 0 0 0 1 world map 50" />
-	<node pkg="tf" type="static_transform_publisher" name="map_scoutodom" args="0 0 0 0 0 0 1 map scout_odom 50" />
-	<node pkg="tf" type="static_transform_publisher" name="map_integrazione_odom" args="0 0 0 0 0 0 1 map integrazione_odom 50" />-->
-
-
-
 <node pkg="generazione" type="generazione" name="generatore" output="screen"/>
 
 <node pkg="rqt_reconfigure" type="rqt_reconfigure" name="rqt_reconfigure" output="screen"/>

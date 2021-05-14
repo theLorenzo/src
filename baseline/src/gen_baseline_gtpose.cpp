@@ -51,7 +51,6 @@ public:
         pub = n.advertise<robotics_hw1::BaselineMsg>("baseline_topic", 1000);
 
         while (ros::ok()){
-            ROS_INFO("SONO ENTRATO NEL WHILE");
             message_filters::Synchronizer<MySyncPolicy> sync(MySyncPolicy(100), sub1, sub2);
             sync.registerCallback(boost::bind(&generatore_baseline::callback1, this, _1, _2));
            ros::spin();
